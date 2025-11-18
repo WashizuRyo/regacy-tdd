@@ -2,11 +2,12 @@
 var Alexa = require('alexa-sdk');
 var questions = require('./questions.json');
 
-var handlers = {
+var createHandlers = function (getNextItemIndex) {
+  return {
     QuizIntent: function () { // 初期状態
         this.attributes['advance'] = 1; // 進行状況を初期化
         this.attributes['score'] = 0; // 得点を初期化
-        var random = Math.floor(Math.random() * questions.length);
+        var random = getNextItemIndex();
         this.attributes['itemIndex'] = random; // 出題する問題のindexを乱数にて保存
         var message = `簡単なクイズをしましょう。1問目。${questions[random].q}`;
         var reprompt = `1問目。${questions[random].q}`;
@@ -27,7 +28,7 @@ var handlers = {
 
         if (this.attributes['advance'] < 7) { // 続きの問題がある場合
             this.attributes['advance']++;
-            var random = Math.floor(Math.random() * questions.length);
+            var random = getNextItemIndex();
             this.attributes['itemIndex'] = random;
             var reprompt = `${this.attributes['advance']}問目。${questions[random].q}`;
             this.emit(':ask', resultMessage + reprompt, reprompt); // 会話を続ける
@@ -61,10 +62,19 @@ var handlers = {
     Unhandled: function () {
         this.emit(':tell', 'すみません、わかりませんでした。終わります。');
     },
+  }
 };
 
-exports.handler = function (event, context, callback) {
-    var alexa = Alexa.handler(event, context);
-    alexa.registerHandlers(handlers);
-    alexa.execute();
-};
+var createHandler = function (getNextItemIndex) {
+  return function (event, context, callback) {
+      var alexa = Alexa.handler(event, context);
+      alexa.registerHandlers(createHandlers(getNextItemIndex));
+      alexa.execute();
+  };
+}
+exports.createHandler = createHandler
+
+exports.handler = function () {
+    var getNextItemIndex = () => Math.floor(Math.random() * questions.length)
+    return createHandler(getNextItemIndex)
+}();
