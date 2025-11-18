@@ -292,3 +292,72 @@ describe("3回目の不正解の場合", () => {
     assert(speechResponse.sessionAttributes.itemIndex === 4)
   })
 })
+
+describe("最終問題に正解した場合", () => {
+  let speechResponse;
+
+  before(async() => {
+    const ctx = context();
+    const event = require('./fixtures/answer.json');
+
+    const getNextItemIndex = () => 4;
+    const handler = index.createHandler(getNextItemIndex)
+    Object.assign(event.session.attributes, {
+      advance: 7,
+      score: 0,
+      accumIncorrects: 0,
+      itemIndex: 3
+    })
+    handler(event, ctx)
+
+    try {
+      speechResponse = await ctx.Promise
+    } catch (error) {
+      console.log("Error", error)
+    }
+  })
+
+  it("shouldEndSessionがtrueになること", () => {
+    assert(speechResponse.response.shouldEndSession === true)
+  })
+  
+  it("連続不正解数が0に戻っていること", () => {
+    assert(speechResponse.sessionAttributes.accumIncorrects === 0)
+  })
+
+  it("返答の音声内容がクイズ終了を知らせる内容であること", () => {
+    assert(speechResponse.response.outputSpeech.ssml === '<speak> そうです。では終わりです。あなたは1点でした。 </speak>')
+  })
+
+  it("進行状況が変わらないこと", () => {
+    assert(speechResponse.sessionAttributes.advance === 7)
+  })
+
+  it("得点が変わること", () => {
+    assert(speechResponse.sessionAttributes.score === 1)
+  })
+
+  it("問題番号が変わらないこと", () => {
+    assert(speechResponse.sessionAttributes.itemIndex === 3)
+  })
+
+  it("handlerのresponse", () => {
+    assert.deepEqual(speechResponse, {
+      "version": "1.0",
+      "response": {
+        "outputSpeech": {
+          "ssml": "<speak> そうです。では終わりです。あなたは1点でした。 </speak>",
+          "type": "SSML"
+        },
+        "shouldEndSession": true
+      },
+      "sessionAttributes": {
+        "accumIncorrects": 0,
+        "advance": 7,
+        "itemIndex": 3,
+        "score": 1
+      },
+      "userAgent": "ask-nodejs/1.0.25 Node/v22.19.0",
+    })
+  })
+})
