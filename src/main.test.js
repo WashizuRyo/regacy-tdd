@@ -19,6 +19,26 @@ describe('LaunchRequestを起動して最初の問題を出題', () => {
       console.error('Error:', err);
     }
   });
+  
+  it("連続不正解数が0であること", () => {
+    assert(speechResponse.sessionAttributes.accumIncorrects === 0)
+  })
+  
+  it("返答の音声内容が初回の出題に伴う内容であること", () => {
+    assert(speechResponse.response.outputSpeech.ssml === '<speak> 簡単なクイズをしましょう。1問目。茨城県の都道府県コード番号は？ </speak>')
+  })
+  
+  it("進行状況は1であること", () => {
+    assert(speechResponse.sessionAttributes.advance === 1)
+  })
+  
+  it("得点は0であること", () => {
+    assert(speechResponse.sessionAttributes.score === 0)
+  })
+  
+  it("出題された問題番号は3", () => {
+    assert(speechResponse.sessionAttributes.itemIndex === 3)
+  })
 
   it('handlerのresponse', () => {
     assert.deepEqual(speechResponse, {
@@ -39,7 +59,8 @@ describe('LaunchRequestを起動して最初の問題を出題', () => {
       "sessionAttributes": {
         "advance": 1,
         "itemIndex": 3,
-        "score": 0
+        "score": 0,
+        "accumIncorrects": 0
       },
       "userAgent": "ask-nodejs/1.0.25 Node/v22.19.0",
     })

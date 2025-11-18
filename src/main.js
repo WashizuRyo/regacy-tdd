@@ -7,6 +7,7 @@ var createHandlers = function (getNextItemIndex) {
     QuizIntent: function () { // 初期状態
         this.attributes['advance'] = 1; // 進行状況を初期化
         this.attributes['score'] = 0; // 得点を初期化
+        this.attributes['accumIncorrects'] = 0; // 連続不正解数を初期化
         var random = getNextItemIndex();
         this.attributes['itemIndex'] = random; // 出題する問題のindexを乱数にて保存
         var message = `簡単なクイズをしましょう。1問目。${questions[random].q}`;
