@@ -2,19 +2,19 @@
   "name": "regacy-tdd",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test": "mocha 'src/**/*.test.js'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "aws-lambda-mock-context": "^3.2.1",
-    "vitest": "^4.0.10"
+    "chai": "^6.2.1",
+    "mocha": "^11.7.5"
+  },
+  "dependencies": {
+    "alexa-sdk": "^1.0.25"
   }
 }
