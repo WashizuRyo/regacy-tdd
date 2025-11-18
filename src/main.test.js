@@ -134,25 +134,26 @@ describe("問題に不正解の場合", () => {
     assert(speechResponse.sessionAttributes.itemIndex === 3)
   })
 
-  it.skip("handlerのresponse", () => {
+  it("handlerのresponse", () => {
     assert.deepEqual(speechResponse, {
       "version": "1.0",
       "response": {
         "outputSpeech": {
-          "ssml": "<speak> ちがいます。正解は8です。では2問目。栃木県の県庁所在地は？ </speak>",
+          "ssml": "<speak> 7？　もう一度言ってください。茨城県の都道府県コード番号は？ </speak>",
           "type": "SSML"
         },
         "reprompt": {
           "outputSpeech": {
-            "ssml": "<speak> 2問目。栃木県の県庁所在地は？ </speak>",
+            "ssml": "<speak> 1番。 茨城県の都道府県コード番号は？ </speak>",
             "type": "SSML"
           }
         },
         "shouldEndSession": false
       },
       "sessionAttributes": {
-        "advance": 2,
-        "itemIndex": 4,
+        "advance": 1,
+        "itemIndex": 3,
+        "accumIncorrects": 1,
         "score": 0
       },
       "userAgent": "ask-nodejs/1.0.25 Node/v22.19.0",
