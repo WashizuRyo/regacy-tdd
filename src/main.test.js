@@ -113,11 +113,15 @@ describe("問題に不正解の場合", () => {
       console.log("Error", error)
     }
   })
-  
+
   it("連続不正解数が増えていること", () => {
     assert(speechResponse.sessionAttributes.accumIncorrects === 1)
   })
-  
+
+  it("返答の音声内容が1回目の不正解に伴う内容であること", () => {
+    assert(speechResponse.response.outputSpeech.ssml === '<speak> 7？　もう一度言ってください。茨城県の都道府県コード番号は？ </speak>')
+  })
+
   it.skip("handlerのresponse", () => {
     assert.deepEqual(speechResponse, {
       "version": "1.0",

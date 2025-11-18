@@ -26,7 +26,7 @@ var createHandlers = function (getNextItemIndex) {
         } else { // 不正解の場合
             this.attributes['accumIncorrects']++;
             shouldRepeatSameQuestion = true;
-            resultMessage = `ちがいます。正解は${currentQuestion.a}です。では`;
+            resultMessage = `${usersAnswer}？　もう一度言ってください。${currentQuestion.q}`;
         }
 
         if (shouldRepeatSameQuestion) {
