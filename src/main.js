@@ -18,15 +18,21 @@ var createHandlers = function (getNextItemIndex) {
         var usersAnswer = this.event.request.intent.slots.Answer.value;
         var currentQuestion = questions[this.attributes['itemIndex']];
 
+        var shouldRepeatSameQuestion = false;
         var resultMessage;
         if (currentQuestion.a === usersAnswer) { // 正解の場合
             resultMessage = `そうです。では`;
             this.attributes['score']++;
         } else { // 不正解の場合
+            this.attributes['accumIncorrects']++;
+            shouldRepeatSameQuestion = true;
             resultMessage = `ちがいます。正解は${currentQuestion.a}です。では`;
         }
 
-        if (this.attributes['advance'] < 7) { // 続きの問題がある場合
+        if (shouldRepeatSameQuestion) {
+          var reprompt = `${this.attributes['advance']}番。 ${currentQuestion.q}`
+          this.emit(':ask', resultMessage, reprompt)
+        } else if (this.attributes['advance'] < 7) { // 続きの問題がある場合
             this.attributes['advance']++;
             var random = getNextItemIndex();
             this.attributes['itemIndex'] = random;
