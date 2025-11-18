@@ -22,8 +22,9 @@ var createHandlers = function (getNextItemIndex) {
         var shouldRepeatSameQuestion = false;
         var resultMessage;
         if (currentQuestion.a === usersAnswer) { // 正解の場合
-            resultMessage = `そうです。では`;
-            this.attributes['score']++;
+          resultMessage = `そうです。では`;
+          this.attributes['score']++;
+          this.attributes['accumIncorrects'] = 0;
         } else { // 不正解の場合
           this.attributes['accumIncorrects']++;
           switch (this.attributes['accumIncorrects']) {

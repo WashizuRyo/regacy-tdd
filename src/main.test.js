@@ -84,6 +84,26 @@ describe("問題に成功した場合", () => {
       console.log("Error", error)
     }
   })
+  
+  it("連続不正解数が0に戻っていること", () => {
+    assert(speechResponse.sessionAttributes.accumIncorrects === 0)
+  })
+  
+  it("返答の音声内容が問題の正解に伴う内容であること", () => {
+    assert(speechResponse.response.outputSpeech.ssml === '<speak> そうです。では2問目。栃木県の県庁所在地は？ </speak>')
+  })
+  
+  it("進行状況が進むこと", () => {
+    assert(speechResponse.sessionAttributes.advance === 2)
+  })
+  
+  it("得点が1増えること", () => {
+    assert(speechResponse.sessionAttributes.score === 1)
+  })
+  
+  it("問題番号が変わること", () => {
+    assert(speechResponse.sessionAttributes.itemIndex === 4)
+  })
 
   it("handlerのresponse", () => {
     assert.deepEqual(speechResponse, {
@@ -102,6 +122,7 @@ describe("問題に成功した場合", () => {
         "shouldEndSession": false
       },
       "sessionAttributes": {
+        "accumIncorrects": 0,
         "advance": 2,
         "itemIndex": 4,
         "score": 1
