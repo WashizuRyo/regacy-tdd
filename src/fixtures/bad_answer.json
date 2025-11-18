@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "session": {
+    "new": false,
+    "sessionId": "SessionId.test-session-id",
+    "application": {
+      "applicationId": "amzn1.ask.skill.test-app-id"
+    },
+    "attributes": {
+      "advance": 1,
+      "score": 0,
+      "itemIndex": 3
+    },
+    "user": {
+      "userId": "amzn1.ask.account.test-user-id"
+    }
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "EdwRequestId.test-request-id",
+    "locale": "ja-JP",
+    "timestamp": "2024-01-01T00:00:00Z",
+    "intent": {
+      "name": "AnswerIntent",
+      "slots": {
+        "Answer": {
+          "name": "Answer",
+          "value": "7"
+        }
+      }
+    }
+  }
+}
