@@ -90,7 +90,7 @@ describe("問題に成功した場合", () => {
   })
 })
 
-describe("問題に不正解の場合", () => {
+describe("1回目の不正解の場合", () => {
   let speechResponse;
 
   before(async() => {
@@ -121,15 +121,15 @@ describe("問題に不正解の場合", () => {
   it("返答の音声内容が1回目の不正解に伴う内容であること", () => {
     assert(speechResponse.response.outputSpeech.ssml === '<speak> 7？　もう一度言ってください。茨城県の都道府県コード番号は？ </speak>')
   })
-  
+
   it("進行状況が進んでいないこと", () => {
     assert(speechResponse.sessionAttributes.advance === 1)
   })
-  
+
   it("得点が変わらないこと", () => {
     assert(speechResponse.sessionAttributes.score === 0)
   })
-  
+
   it("問題番号が変わらないこと", () => {
     assert(speechResponse.sessionAttributes.itemIndex === 3)
   })
@@ -158,5 +158,50 @@ describe("問題に不正解の場合", () => {
       },
       "userAgent": "ask-nodejs/1.0.25 Node/v22.19.0",
     })
+  })
+})
+
+describe("2回目の不正解の場合", () => {
+  let speechResponse;
+
+  before(async() => {
+    const ctx = context();
+    const event = require('./fixtures/bad_answer.json');
+
+    const getNextItemIndex = () => 4;
+    const handler = index.createHandler(getNextItemIndex)
+    Object.assign(event.session.attributes, {
+      advance: 1,
+      score: 0,
+      accumIncorrects: 1,
+      itemIndex: 3
+    })
+    handler(event, ctx)
+
+    try {
+      speechResponse = await ctx.Promise
+    } catch (error) {
+      console.log("Error", error)
+    }
+  })
+
+  it("連続不正解数が増えていること", () => {
+    assert(speechResponse.sessionAttributes.accumIncorrects === 2)
+  })
+
+  it("返答の音声内容が2回目の不正解に伴う内容であること", () => {
+    assert(speechResponse.response.outputSpeech.ssml === '<speak> 私には｢7｣と聞こえましたが，それは正しくありません。　もう一度言ってください。茨城県の都道府県コード番号は？ </speak>')
+  })
+
+  it("進行状況が進んでいないこと", () => {
+    assert(speechResponse.sessionAttributes.advance === 1)
+  })
+
+  it("得点が変わらないこと", () => {
+    assert(speechResponse.sessionAttributes.score === 0)
+  })
+
+  it("問題番号が変わらないこと", () => {
+    assert(speechResponse.sessionAttributes.itemIndex === 3)
   })
 })
