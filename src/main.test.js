@@ -205,3 +205,48 @@ describe("2回目の不正解の場合", () => {
     assert(speechResponse.sessionAttributes.itemIndex === 3)
   })
 })
+
+describe("3回目の不正解の場合", () => {
+  let speechResponse;
+
+  before(async() => {
+    const ctx = context();
+    const event = require('./fixtures/bad_answer.json');
+
+    const getNextItemIndex = () => 4;
+    const handler = index.createHandler(getNextItemIndex)
+    Object.assign(event.session.attributes, {
+      advance: 2,
+      score: 0,
+      accumIncorrects: 2,
+      itemIndex: 3
+    })
+    handler(event, ctx)
+
+    try {
+      speechResponse = await ctx.Promise
+    } catch (error) {
+      console.log("Error", error)
+    }
+  })
+
+  it("連続不正解数が0の戻っていること", () => {
+    assert(speechResponse.sessionAttributes.accumIncorrects === 0)
+  })
+
+  it("返答の音声内容が3回目の不正解に伴う内容であること", () => {
+    assert(speechResponse.response.outputSpeech.ssml === '<speak> ちがいます。正解は8です。では3問目。栃木県の県庁所在地は？ </speak>')
+  })
+
+  it("進行状況が進んでいること", () => {
+    assert(speechResponse.sessionAttributes.advance === 3)
+  })
+
+  it("得点が変わらないこと", () => {
+    assert(speechResponse.sessionAttributes.score === 0)
+  })
+
+  it("問題番号が変わること", () => {
+    assert(speechResponse.sessionAttributes.itemIndex === 4)
+  })
+})

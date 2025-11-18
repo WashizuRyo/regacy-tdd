@@ -25,13 +25,18 @@ var createHandlers = function (getNextItemIndex) {
             this.attributes['score']++;
         } else { // 不正解の場合
           this.attributes['accumIncorrects']++;
-          shouldRepeatSameQuestion = true;
           switch (this.attributes['accumIncorrects']) {
             case 1:
               resultMessage = `${usersAnswer}？　もう一度言ってください。${currentQuestion.q}`;
+              shouldRepeatSameQuestion = true;
               break;
             case 2:
               resultMessage = `私には｢${usersAnswer}｣と聞こえましたが，それは正しくありません。　もう一度言ってください。${currentQuestion.q}`
+              shouldRepeatSameQuestion = true;
+              break;
+            default:
+              resultMessage = `ちがいます。正解は${currentQuestion.a}です。では`
+              this.attributes['accumIncorrects'] = 0;
               break;
           }
         }
