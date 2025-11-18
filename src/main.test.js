@@ -121,6 +121,18 @@ describe("問題に不正解の場合", () => {
   it("返答の音声内容が1回目の不正解に伴う内容であること", () => {
     assert(speechResponse.response.outputSpeech.ssml === '<speak> 7？　もう一度言ってください。茨城県の都道府県コード番号は？ </speak>')
   })
+  
+  it("進行状況が進んでいないこと", () => {
+    assert(speechResponse.sessionAttributes.advance === 1)
+  })
+  
+  it("得点が変わらないこと", () => {
+    assert(speechResponse.sessionAttributes.score === 0)
+  })
+  
+  it("問題番号が変わらないこと", () => {
+    assert(speechResponse.sessionAttributes.itemIndex === 3)
+  })
 
   it.skip("handlerのresponse", () => {
     assert.deepEqual(speechResponse, {
